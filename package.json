@@ -1,0 +1,75 @@
+{
+  "name": "voicepaste",
+  "version": "2.1.6",
+  "description": "Privacy-first voice input for macOS & Windows — global hotkey, speak, auto-paste. Your data stays local. Works offline with on-device ASR & LLM. Lightweight, open source, fully customizable.",
+  "author": "that-yolanda",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/that-yolanda/voicepaste.git"
+  },
+  "homepage": "https://github.com/that-yolanda/voicepaste#readme",
+  "bugs": {
+    "url": "https://github.com/that-yolanda/voicepaste/issues"
+  },
+  "keywords": [
+    "tauri",
+    "voice",
+    "speech-to-text",
+    "asr",
+    "macos",
+    "windows",
+    "doubao",
+    "volcengine",
+    "sherpa-onnx",
+    "funasr",
+    "qwen3asr"
+  ],
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "dev:no-watch": "tauri dev --no-watch",
+    "dev:web": "vite",
+    "build:web": "vite build",
+    "pack": "tsx --env-file=.env scripts/pack.ts",
+    "icon": "tsx scripts/prepare-assets.ts",
+    "clean": "tsx scripts/clean.ts",
+    "lint": "biome lint . && cargo clippy --manifest-path src-tauri/Cargo.toml",
+    "lint:ci": "biome ci . && cargo fmt --manifest-path src-tauri/Cargo.toml --check && cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings",
+    "format": "biome check --write . && cargo fmt --manifest-path src-tauri/Cargo.toml",
+    "check": "biome check --write . && cargo fmt --manifest-path src-tauri/Cargo.toml && cargo clippy --manifest-path src-tauri/Cargo.toml",
+    "test": "npx vitest run && cargo test --manifest-path src-tauri/Cargo.toml",
+    "test:watch": "npx vitest",
+    "test:asr": "cargo test --manifest-path src-tauri/Cargo.toml --features asr-integration",
+    "test:llm": "cargo test --manifest-path src-tauri/Cargo.toml --features llm-integration"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.12",
+    "@tailwindcss/vite": "^4.3.1",
+    "@tauri-apps/cli": "^2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/coverage-v8": "^4.1.8",
+    "jsdom": "^29.1.1",
+    "lucide": "^1.14.0",
+    "tailwindcss": "^4.3.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.8"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.11.0",
+    "driver.js": "1.10.2",
+    "i18next": "^26.5.11",
+    "lucide-react": "^1.18.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-i18next": "^17.1.9"
+  }
+}

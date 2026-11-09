@@ -1,0 +1,73 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-cli/config.schema.json",
+  "productName": "VoicePaste Personal",
+  "identifier": "com.hululu.voicepaste.personal",
+  "build": {
+    "frontendDist": "../web/dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npx tsx scripts/validate-json.ts && vite",
+    "beforeBuildCommand": "npx tsx scripts/validate-json.ts && vite build"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "settings",
+        "create": false,
+        "url": "settings.html",
+        "title": "VoicePaste Personal 配置",
+        "width": 860,
+        "height": 760,
+        "minWidth": 860,
+        "minHeight": 760,
+        "visible": true,
+        "decorations": true,
+        "hiddenTitle": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' blob: asset: https://asset.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "createUpdaterArtifacts": false,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": {
+      "../config.yaml.example": "config.yaml.example",
+      "../prompts.json": "prompts.json",
+      "../hotwords.json": "hotwords.json",
+      "../registry.json": "registry.json",
+      "../assets/sounds/start.mp3": "sounds/start.mp3",
+      "../assets/sounds/end.mp3": "sounds/end.mp3",
+      "icons/icon.png": "icons/icon.png",
+      "icons/trayTemplate.png": "icons/trayTemplate.png",
+      "lang/en.lproj/InfoPlist.strings": "en.lproj/InfoPlist.strings",
+      "lang/zh-Hans.lproj/InfoPlist.strings": "zh-Hans.lproj/InfoPlist.strings"
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "entitlements": "entitlements.plist",
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "",
+      "nsis": {
+        "installerIcon": "icons/icon.ico"
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+# VoicePaste 配置文件
+#
+# 所有参数的默认值见 registry.json。
+# 本文件仅记录你修改过的参数，未列出的参数自动从 registry.json 读取默认值。
+# 通过设置 UI 修改任意参数后，对应字段会自动写入此文件。
+
+app:
+  onboarding_pending: true      # 首次打开设置时邀请进入配置引导
+  # 默认全局主键：macOS 左 Command，Windows 左 Ctrl；省略时按平台自动选择。
+  hotkey_mode: toggle             # 原文输入模式；全局主键始终用于免提唤起
+  # voice_hotkey 默认跟随全局主键；hold 时需配置独立键，完整按住 500ms 后启动。
+  remove_trailing_period: true    # 自动删除识别结果末尾的句号
+  keep_clipboard: true            # 保留识别结果在剪贴板
+  keep_recordings: false          # 是否保留成功录音；关闭时仅保留失败录音用于重试
+  language: auto                 # 界面语言：auto（跟随系统）/ zh-CN / en
+  theme: system                   # dark / light / system
+  overlay_style: liquid           # macOS 悬浮窗外观（仅 macOS 生效）
+  sound:
+    enabled: true
+    start_sound: ""
+    end_sound: ""
+  beta_updates: false
+
+audio:
+  provider: sherpa-onnx-qwen3-asr-1.7B-int8  # 本地 Qwen3-ASR 高精度版，先在设置下载模型
+  # 如需使用豆包流式 ASR，在设置 UI 中填写凭据。
+  # 如需使用本地 sherpa-onnx 模型，在设置 UI 中切换并下载模型。
+  # 修改任何参数后，对应模型配置段会自动追加到此文件。
+
+llm:
+  provider: deepseek
+  deepseek:
+    api_key: ""
+    model: deepseek-flash

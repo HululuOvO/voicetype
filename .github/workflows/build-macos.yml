@@ -1,0 +1,69 @@
+name: Build Mac app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-macos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 50
+    env:
+      APPLE_SIGNING_IDENTITY: '-'
+      CARGO_TARGET_DIR: ${{ github.workspace }}/src-tauri/target
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Set up Rust
+        run: |
+          rustup update stable
+          rustup default stable
+          rustup target add aarch64-apple-darwin
+          test "$(uname -m)" = arm64
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build Apple Silicon app
+        run: pnpm exec tauri build --target aarch64-apple-darwin --bundles app
+      - name: Test dictionary and verify app
+        shell: bash
+        run: |
+          git diff --exit-code -- src-tauri/Cargo.lock
+          cargo test --manifest-path src-tauri/Cargo.toml --release --locked \
+            --target aarch64-apple-darwin --lib personal_dictionary::tests
+          app="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/VoicePaste Personal.app"
+          /usr/bin/codesign --verify --deep --strict "$app"
+          /usr/bin/ditto -c -k --sequesterRsrc --keepParent "$app" VoicePaste-Personal-AppleSilicon.zip
+      - name: Upload downloadable app
+        uses: actions/upload-artifact@v7
+        with:
+          path: VoicePaste-Personal-AppleSilicon.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish Mac download
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="macos-build-${GITHUB_RUN_NUMBER}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" VoicePaste-Personal-AppleSilicon.zip --clobber
+          else
+            gh release create "$tag" VoicePaste-Personal-AppleSilicon.zip \
+              --target "$GITHUB_SHA" --title "VoicePaste Personal · Mac build ${GITHUB_RUN_NUMBER}" \
+              --notes "Apple Silicon Mac app. Open the app and download Qwen3-ASR from its local model settings. This build uses an ad-hoc signature."
+          fi
